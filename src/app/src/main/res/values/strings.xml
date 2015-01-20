@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Ships</string>
+
+    <string name="bluetooth_scan_button_label">SZUKAJ URZĄDZEŃ</string>
+
+</resources>
