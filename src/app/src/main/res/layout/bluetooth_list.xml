@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:padding="6dp">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="UTWÓRZ SERWER"
+        android:id="@+id/serverCreate"
+        android:layout_alignParentTop="true" />
+
+    <Button
+        android:id="@+id/searchDevices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ZNAJDŹ URZĄDZENIA"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/serverCreate" />
+
+    <ListView
+        android:id="@+id/BluetoothDeviceList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/searchDevices">
+
+    </ListView>
+
+</RelativeLayout>

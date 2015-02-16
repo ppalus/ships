@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+
+    <Button
+        android:id="@+id/singlePlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:text="GRA Z KOMPUTEREM" />
+
+    <Button
+        android:id="@+id/multiPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/singlePlayer"
+        android:layout_marginTop="35dp"
+        android:text="GRA PRZEZ BLUETOOTH"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/gameHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SHIPS"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75dp"
+        android:textSize="30dp" />
+
+    
+</RelativeLayout>
