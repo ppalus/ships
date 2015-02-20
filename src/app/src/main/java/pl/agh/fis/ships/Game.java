@@ -11,6 +11,8 @@ public class Game implements ResultHandler {
     private Player opponent;
     private AIPlayer pc;
     private int mode;
+    View gameShield;
+    View[] rids;
 
     public Game(Player player, AIPlayer pc, int mode) {
         this.player = player;
@@ -18,9 +20,12 @@ public class Game implements ResultHandler {
         this.mode = mode;
     }
 
-    public Game(Player player, Player opponent) {
+    public Game(Player player, Player opponent, View gameShield, View[] rids, boolean isStarting) {
         this.player = player;
         this.opponent = opponent;
+        this.gameShield = gameShield;
+        this.rids = rids;
+        setLock(!isStarting);
     }
 
     private void initSinglePlayer(final Activity a) {
@@ -79,6 +84,8 @@ public class Game implements ResultHandler {
 
     public void initMultiPlayerMode(final Activity a) {
         final ResultHandler resultHandler = this;
+        final ConnectedThread connectedThread = new ConnectedThread(resultHandler, a);
+        connectedThread.execute();
         Ship[] ships = opponent.getShips();
         for (final Ship ship : ships) {
             for (int j = 0; j < ship.getLength(); j++) {
@@ -102,15 +109,13 @@ public class Game implements ResultHandler {
                                     opponent.shipCounter--;
                                     if (opponent.shipCounter == 0) {
                                         a.setContentView(R.layout.win);
+                                        connectedThread.write(ConnectedThread.intArrayToByteArray(new int[]{ -1, -1}));
                                         break end;
                                     }
                                 }
                             }
-                            ConnectedThread connectedThread = new ConnectedThread(resultHandler);
                             connectedThread.write(ConnectedThread.intArrayToByteArray(new int[]{ x, y }));
-                            connectedThread.execute();
-                            // TODO send my move?
-                            // TODO opponent make move
+                            setLock(true);
                         }
                     }
                 });
@@ -135,11 +140,8 @@ public class Game implements ResultHandler {
                                 test.setState(Field.SHOT);
                                 test.getButton().setClickable(false);
                             }
-                            ConnectedThread connectedThread = new ConnectedThread(resultHandler);
                             connectedThread.write(ConnectedThread.intArrayToByteArray(new int[]{ x, y }));
-                            connectedThread.execute();
-                            // TODO send my move?
-                            // TODO opponent make move
+                            setLock(true);
                         }
                     });
                 }
@@ -157,9 +159,13 @@ public class Game implements ResultHandler {
     }
 
     @Override
-    public void handleResult(int[] ints) {
+    public void handleResult(int[] ints, Activity activity) {
         int x = ints[0];
         int y = ints[1];
+        if(x == -1 && y == -1) {
+            activity.setContentView(R.layout.lost);
+            return;
+        }
         if (player.getMatrix()[x][y] == 0) {
             new Field(player.getRids()[x * 10 + y], x * 10 + y, Field.MISSED);
         }
@@ -174,13 +180,18 @@ public class Game implements ResultHandler {
                             for (int k = 0; k < ship.getLength(); k++)
                                 ship.getField(k).setState(Field.SINK);
                             player.shipCounter--;
-                            if (player.shipCounter == 0) {
-                                // TODO opponent win
-                            }
                         }
                     }
                 }
             }
+        }
+        setLock(false);
+    }
+
+    private void setLock(boolean lock) {
+        gameShield.setVisibility(lock ? View.VISIBLE : View.GONE);
+        for(View rid : rids) {
+            rid.setClickable(!lock);
         }
     }
 }

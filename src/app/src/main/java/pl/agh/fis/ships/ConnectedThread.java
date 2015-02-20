@@ -1,5 +1,6 @@
 package pl.agh.fis.ships;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -19,10 +20,19 @@ public class ConnectedThread extends AsyncTask<Void, Void, Void> {
     private ResultHandler resultHandler;
     private InputStream inputStream;
     private OutputStream outputStream;
+    private Activity activity;
     private byte[] buffer;
+    private boolean repeat;
 
-    public ConnectedThread(ResultHandler resultHandler) {
+    public ConnectedThread(ResultHandler resultHandler, Activity activity) {
         this.resultHandler = resultHandler;
+        this.activity = activity;
+        if(activity instanceof BattleShipsGame) {
+            repeat = true;
+        }
+        else {
+            repeat = false;
+        }
         buffer = new byte[BUFFER_SIZE];
         try {
             inputStream = Globals.bluetoothSocket.getInputStream();
@@ -35,18 +45,21 @@ public class ConnectedThread extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... params) {
         try {
-            if (inputStream.read(buffer) == -1) {
-                throw new Exception("Error reading data.");
-            }
+            do {
+                if (inputStream.read(buffer) == -1) {
+                    throw new Exception("Error reading data.");
+                }
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        resultHandler.handleResult(byteArrayToIntArray(buffer), activity);
+                    }
+                });
+            } while (repeat);
         } catch (Exception e) {
             Log.e(ConnectedThread.class.getSimpleName(), e.toString(), e);
         }
         return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        resultHandler.handleResult(byteArrayToIntArray(buffer));
     }
 
     public static byte[] intArrayToByteArray(int[] ints) {

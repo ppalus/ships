@@ -194,13 +194,13 @@ public class ShipsActivity extends Activity implements ResultHandler {
             }
         });
         Button buttonPlay = (Button) findViewById(R.id.next);
-        final ResultHandler resultHandler = this;
+        final ShipsActivity shipsActivity = this;
         buttonPlay.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
                 if (rGrid.isReady()) {
                     switch(mode) {
                         case MULTI_PLAYER_MODE:
-                            ConnectedThread connectedThread = new ConnectedThread(resultHandler);
+                            ConnectedThread connectedThread = new ConnectedThread(shipsActivity ,shipsActivity);
                             connectedThread.execute();
                             byte[] gridBytes = ConnectedThread.intArrayToByteArray(rGrid.getParsedGrid());
                             connectedThread.write(gridBytes);
@@ -220,11 +220,12 @@ public class ShipsActivity extends Activity implements ResultHandler {
         });
     }
 
-    public void handleResult(int[] parsedGrid) {
+    public void handleResult(int[] parsedGrid, Activity activity) {
         Intent myIntent = new Intent(ShipsActivity.this, BattleShipsGame.class);
         myIntent.putExtra(BattleShipsGame.EXTRA_PARSED_GRID, rGrid.getParsedGrid());
         myIntent.putExtra(BattleShipsGame.EXTRA_OPPONENTS_PARSED_GRID, parsedGrid);
         myIntent.putExtra(BattleShipsGame.EXTRA_MODE, MULTI_PLAYER_MODE);
+        myIntent.putExtra(BattleShipsGame.EXTRA_SERVER, multiPlayerMode == MultiPlayerMode.SERVER);
         ShipsActivity.this.startActivity(myIntent);
     }
 

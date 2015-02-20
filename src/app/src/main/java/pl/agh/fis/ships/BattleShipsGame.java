@@ -19,6 +19,7 @@ public class BattleShipsGame extends Activity {
     public final static String EXTRA_OPPONENTS_PARSED_GRID = "OPPONENTS_PARSED_GRID";
     public final static String EXTRA_STATE = "STATE";
     public final static String EXTRA_MODE = "MODE";
+    public final static String EXTRA_SERVER = "SERVER";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class BattleShipsGame extends Activity {
         int[] opponentsParsedGrid = extras.getIntArray(EXTRA_OPPONENTS_PARSED_GRID);
         int state = extras.getInt(EXTRA_STATE);
         int mode = extras.getInt(EXTRA_MODE);
+        boolean isServer = extras.getBoolean(EXTRA_SERVER);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -85,10 +87,12 @@ public class BattleShipsGame extends Activity {
         else {
             Player rGrid = new Player(parsedGrid, views, true);
             Player rGrid2 = new Player(opponentsParsedGrid, views2);
-            theGame = new Game(rGrid, rGrid2);
+            theGame = new Game(rGrid, rGrid2, findViewById(R.id.gameShield), views2, isServer);
         }
         theGame.startGame(this);
     }
+
+
 
 
     public void endGame() {
