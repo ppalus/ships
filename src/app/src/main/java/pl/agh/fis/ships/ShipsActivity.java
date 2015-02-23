@@ -64,10 +64,12 @@ public class ShipsActivity extends Activity implements ResultHandler {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                foundDevices.add(device);
-                BTArrayAdapter.add(device.getName());
-                BTArrayAdapter.notifyDataSetChanged();
+                try {
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    foundDevices.add(device);
+                    BTArrayAdapter.add(device.getName());
+                    BTArrayAdapter.notifyDataSetChanged();
+                } catch(Exception ignore) {}
             }
         }
     };
@@ -326,9 +328,9 @@ public class ShipsActivity extends Activity implements ResultHandler {
     public void findBluetoothDevices() {
         if (bluetoothAdapter.isDiscovering()) {
             bluetoothAdapter.cancelDiscovery();
-            ((Button) findViewById(R.id.searchDevices)).setText("FIND DEVICES");
+            ((Button) findViewById(R.id.searchDevices)).setText("ZNAJDŹ URZĄDZENIA");
         } else {
-            ((Button) findViewById(R.id.searchDevices)).setText("STOP SEARCHING");
+            ((Button) findViewById(R.id.searchDevices)).setText("ZATRZYMAJ WYSZUKIWANIE");
             BTArrayAdapter.clear();
             bluetoothAdapter.startDiscovery();
             registerReceiver(receiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
